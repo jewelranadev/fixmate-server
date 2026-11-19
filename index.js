@@ -24,10 +24,6 @@ app.get("/", (req, res) => {
 // Real routes
 app.use("/api/services", servicesRouter);
 
-// TEMPORARY test routes: delete after testing
-app.get("/api/test/me", verifyToken, (req, res) => res.json({ success: true, user: req.user }));
-app.get("/api/test/technician", verifyToken, verifyTechnician, (req, res) => res.json({ success: true, message: "technician ok" }));
-app.get("/api/test/admin", verifyToken, verifyAdmin, (req, res) => res.json({ success: true, message: "admin ok" }));
 
 // 404 and error handlers must come AFTER all routes
 app.use((req, res) => {
