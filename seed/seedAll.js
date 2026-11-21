@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { connectDB, collections, getDB } from "../config/db.js";
+import { seedServices } from "./seedServices.js";
 
 const AUTH_URL = (process.env.AUTH_URL || "http://localhost:3000").replace(/\/$/, "");
 const PASSWORD = process.env.SEED_PASSWORD;
@@ -55,13 +56,16 @@ const PLAN = [
 async function run() {
   await connectDB();
 
+  // Full seed: services first, then accounts, bookings and payments.
+  await seedServices();
+
   const services = await collections
     .services()
     .find({ approvalStatus: "approved" })
     .sort({ createdAt: 1, _id: 1 })
     .toArray();
   if (services.length < 12) {
-    console.error(`Only ${services.length} approved services found. Run "npm run seed:services" first.`);
+    console.error(`Only ${services.length} approved services available after seeding.`);
     process.exit(1);
   }
 
