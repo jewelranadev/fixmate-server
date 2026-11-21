@@ -5,6 +5,7 @@ import { connectDB } from "./config/db.js";
 import servicesRouter from "./routes/services.js";
 import bookingsRouter from "./routes/bookings.js";
 import paymentsRouter from "./routes/payments.js";
+import paymentWebhookRouter from "./routes/paymentWebhook.js";
 import adminRouter from "./routes/admin.js";
 
 const app = express();
@@ -26,6 +27,10 @@ app.use(
     credentials: true,
   }),
 );
+
+// Stripe signs the raw request bytes. This router MUST be mounted before the
+// global JSON parser so its body is still a Buffer when the signature is checked.
+app.use("/api/payments/webhook", express.raw({ type: "application/json" }), paymentWebhookRouter);
 
 app.use(express.json());
 

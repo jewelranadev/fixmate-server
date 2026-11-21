@@ -55,4 +55,19 @@ router.patch("/services/:id/approval", async (req, res) => {
   }
 });
 
+// All payment records for the admin transactions dashboard.
+router.get("/payments", async (req, res) => {
+  try {
+    const payments = await collections
+      .payments()
+      .find({})
+      .sort({ paidAt: -1, _id: -1 })
+      .toArray();
+    res.json({ success: true, count: payments.length, payments });
+  } catch (error) {
+    console.error("GET /api/admin/payments failed:", error);
+    res.status(500).json({ success: false, message: "Failed to load payments" });
+  }
+});
+
 export default router;
