@@ -26,6 +26,8 @@ export const collections = {
   services: () => getDB().collection("services"),
   bookings: () => getDB().collection("bookings"),
   payments: () => getDB().collection("payments"),
+  // BetterAuth stores accounts in the singular "user" collection.
+  users: () => getDB().collection("user"),
 };
 
 async function ensureIndexes(db) {
