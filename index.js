@@ -7,6 +7,7 @@ import bookingsRouter from "./routes/bookings.js";
 import paymentsRouter from "./routes/payments.js";
 import paymentWebhookRouter from "./routes/paymentWebhook.js";
 import adminRouter from "./routes/admin.js";
+import usersRouter from "./routes/users.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -43,6 +44,7 @@ app.get("/", (req, res) => {
 app.use("/api/services", servicesRouter);
 app.use("/api/bookings", bookingsRouter);
 app.use("/api/payments", paymentsRouter);
+app.use("/api/users", usersRouter);
 app.use("/api/admin", adminRouter);
 
 // 404 and error handlers must come AFTER all routes
