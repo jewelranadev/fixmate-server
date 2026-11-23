@@ -14,6 +14,10 @@ const SORTS = {
 };
 const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+// Public responses must not expose technician contact PII. Admin/technician
+// endpoints return full service documents where legitimately required.
+const publicService = ({ technicianEmail: _technicianEmail, ...service }) => service;
+
 // PUBLIC: approved + available services with server-side search/filter/sort
 router.get("/", async (req, res) => {
   try {
@@ -32,7 +36,11 @@ router.get("/", async (req, res) => {
     if (Number.isInteger(max) && max > 0) cursor = cursor.limit(Math.min(max, 50));
 
     const services = await cursor.toArray();
-    res.json({ success: true, count: services.length, services });
+    res.json({
+      success: true,
+      count: services.length,
+      services: services.map(publicService),
+    });
   } catch (error) {
     console.error("GET /api/services failed:", error);
     res.status(500).json({ success: false, message: "Failed to load services" });
@@ -71,7 +79,7 @@ router.get("/:id", async (req, res) => {
 
     res.json({
       success: true,
-      service,
+      service: publicService(service),
       technician: technician
         ? {
             name: technician.name,
